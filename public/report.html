@@ -65,40 +65,38 @@
         <header class="row p-2 p-lg-5 rounded-bottom">
             <div id="heroText" class="text-center d-flex flex-column align-items-center rounded py-5">
                 <h1 class="pb-2">Report an Item</h1>
-
                 <p>To report an item, please fill out this form and drop it off at the main office.</p>
             </div>
         </header>
         <section id="report" class="row justify-content-center p-3">
             <form class="d-flex flex-column justify-content-center col-sm-8 col-xl-6">
-                <!--Name-->
+                <!-- Name -->
                 <div class="mb-3">
                     <label for="postName" class="form-label">Item Name *</label>
-                    <input type="email" class="form-control" id="postName" placeholder="White Nike Shoes" required>
+                    <input type="text" class="form-control" id="postName" placeholder="White Nike Shoes" required>
                 </div>
 
-                <!--Categories-->
+                <!-- Categories -->
                 <div class="mb-3">
                     <label for="postCategoryID" class="form-label">Item Category *</label>
-
-                    <select id="postCategoryID" class="form-select" aria-label="Default select example" required>
-                        <option disabled selected value="6">Select...</option>
+                    <select id="postCategoryID" class="form-select" required>
+                        <option disabled selected value="">Select...</option>
                     </select>
                 </div>
 
-                <!--Desc.-->
+                <!-- Description -->
                 <div class="mb-3">
                     <label for="postDescription" class="form-label">Description <span
                             class="fw-normal">(optional)</span></label>
                     <textarea class="form-control" id="postDescription" rows="3"></textarea>
                 </div>
 
-                <!--Photo-->
+                <!-- Photo Placeholder -->
                 <div class="mb-3 row rounded p-2 align-items-center">
                     <div class="col-md-6 p-2">
-                        <label for="postPhoto" class="form-label">Item Photo *</label>
-                        <input type="file" accept="image/*" id="postPhoto" placeholder="Photo" capture="environment"
-                            class="form-control" required>
+                        <label for="postPhoto" class="form-label">Item Photo (placeholder)</label>
+                        <input type="file" accept="image/*" id="postPhoto" class="form-control" disabled>
+                        <small class="text-muted">Currently ignored in submission</small>
                     </div>
                     <div id="displayPhoto" class="d-none col-md-6 mt-2 rounded p-2 shadow-sm"></div>
                 </div>
@@ -188,7 +186,7 @@
                 }
             }
 
-            // Submit new item
+            // Submit new item (ignoring photo)
             async function postItemProfile() {
                 const name = document.getElementById('postName').value.trim();
                 const categoryID = document.getElementById('postCategoryID').value;
