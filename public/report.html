@@ -230,7 +230,25 @@
             console.error("Error adding item:", err);
             alert("Failed to submit. Check console.");
         }
-    }
+    }c
+
+    const categories = [
+            "School Supplies",
+            "Books",
+            "Clothing",
+            "Electronics",
+            "Personal Items",
+            "Other"
+        ];
+
+        categories.forEach(async (name) => {
+            try {
+                await addDoc(collection(db, "itemCategory"), { name });
+                console.log(`Added category: ${name}`);
+            } catch (err) {
+                console.error(err);
+            }
+        });
 
     // ===== Initialize =====
     window.addEventListener('DOMContentLoaded', loadCategories);
