@@ -35,79 +35,79 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top shadow-sm bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">LostATC</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
-                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="catalog.html">Find an Item</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="report.html">Report an Item</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="user.html">Admin Login</a>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg sticky-top shadow-sm bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">LostATC</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+            aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="catalog.html">Find an Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="report.html">Report an Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="user.html">Admin Login</a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <main class="col-md-11 col-lg-10 col-xl-8 mx-auto p-1 p-sm-0">
-        <header class="row p-2 p-lg-5 rounded-bottom">
-            <div id="heroText" class="text-center d-flex flex-column align-items-center rounded py-5">
-                <h1 class="pb-2">Report an Item</h1>
-                <p>To report an item, please fill out this form and drop it off at the main office.</p>
+<main class="col-md-11 col-lg-10 col-xl-8 mx-auto p-1 p-sm-0">
+    <header class="row p-2 p-lg-5 rounded-bottom">
+        <div id="heroText" class="text-center d-flex flex-column align-items-center rounded py-5">
+            <h1 class="pb-2">Report an Item</h1>
+            <p>To report an item, please fill out this form and drop it off at the main office.</p>
+        </div>
+    </header>
+    <section id="report" class="row justify-content-center p-3">
+        <form class="d-flex flex-column justify-content-center col-sm-8 col-xl-6">
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="postName" class="form-label">Item Name *</label>
+                <input type="text" class="form-control" id="postName" placeholder="White Nike Shoes" required>
             </div>
-        </header>
-        <section id="report" class="row justify-content-center p-3">
-            <form class="d-flex flex-column justify-content-center col-sm-8 col-xl-6">
-                <!-- Name -->
-                <div class="mb-3">
-                    <label for="postName" class="form-label">Item Name *</label>
-                    <input type="text" class="form-control" id="postName" placeholder="White Nike Shoes" required>
-                </div>
 
-                <!-- Categories -->
-                <div class="mb-3">
-                    <label for="postCategoryID" class="form-label">Item Category *</label>
-                    <select id="postCategoryID" class="form-select" required>
-                        <option disabled selected value="">Select...</option>
-                    </select>
-                </div>
+            <!-- Categories -->
+            <div class="mb-3">
+                <label for="postCategoryID" class="form-label">Item Category *</label>
+                <select id="postCategoryID" class="form-select" required>
+                    <option disabled selected value="">Select...</option>
+                </select>
+            </div>
 
-                <!-- Description -->
-                <div class="mb-3">
-                    <label for="postDescription" class="form-label">Description <span
-                            class="fw-normal">(optional)</span></label>
-                    <textarea class="form-control" id="postDescription" rows="3"></textarea>
-                </div>
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="postDescription" class="form-label">Description <span
+                        class="fw-normal">(optional)</span></label>
+                <textarea class="form-control" id="postDescription" rows="3"></textarea>
+            </div>
 
-                <!-- Photo Placeholder -->
-                <div class="mb-3 row rounded p-2 align-items-center">
-                    <div class="col-md-6 p-2">
-                        <label for="postPhoto" class="form-label">Item Photo (placeholder)</label>
-                        <input type="file" accept="image/*" id="postPhoto" class="form-control">
-                        <small class="text-muted">Currently ignored in submission</small>
-                    </div>
-                    <div id="displayPhoto" class="d-none col-md-6 mt-2 rounded p-2 shadow-sm"></div>
+            <!-- Photo Placeholder -->
+            <div class="mb-3 row rounded p-2 align-items-center">
+                <div class="col-md-6 p-2">
+                    <label for="postPhoto" class="form-label">Item Photo (placeholder)</label>
+                    <input type="file" accept="image/*" id="postPhoto" class="form-control" disabled>
+                    <small class="text-muted">Currently ignored in submission</small>
                 </div>
+                <div id="displayPhoto" class="d-none col-md-6 mt-2 rounded p-2 shadow-sm"></div>
+            </div>
 
-                <div class="d-flex justify-content-end">
-                    <button type="reset" class="btn btn-outline-primary px-3" onclick="deleteImg()">Reset</button>
-                    <button type="button" class="btn btn-primary px-3 ms-2" onclick="postItemProfile()">Submit</button>
-                </div>
-            </form>
-        </section>
-    </main>
+            <div class="d-flex justify-content-end">
+                <button type="reset" class="btn btn-outline-primary px-3" onclick="deleteImg()">Reset</button>
+                <button type="button" class="btn btn-primary px-3 ms-2" onclick="postItemProfile()">Submit</button>
+            </div>
+        </form>
+    </section>
+</main>
 
 
     <footer class="container-fluid text-primary mt-4 bg-light">
@@ -138,84 +138,102 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script>
-            const API_PREFIX = 'https://lost-atc.cloudfunctions.net/api/items';
-            const API_CATEGORIES = 'https://lost-atc.cloudfunctions.net/api/categories';
+    <script type="module">
+    // Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc
+    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-            const formCategory = document.getElementById('postCategoryID');
-            const formPhoto = document.getElementById('postPhoto');
-            const imgContainer = document.getElementById('displayPhoto');
+    // ===== Replace with your Firebase project config =====
+    const firebaseConfig = {
+        apiKey: "AIzaSyB83ZIyVgsrjFYkfEHQmPZi8gztIG5Kt14",
+        authDomain: "lost-atc.firebaseapp.com",
+        projectId: "lost-atc",
+        storageBucket: "lost-atc.appspot.com",
+        messagingSenderId: "866408232314",
+        appId: "1:866408232314:web:ac305e5216cd36e26652c3"
+    };
 
-            // Keep photo preview as a placeholder
-            formPhoto.addEventListener('change', (event) => {
-                if (imgContainer.classList.contains('d-none')) {
-                    imgContainer.classList.remove('d-none');
-                }
-                imgContainer.innerHTML = '';
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.classList.add('w-100', 'rounded');
-                        imgContainer.appendChild(imgElement);
-                    };
-                    reader.readAsDataURL(file);
-                }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== Form Elements =====
+    const formCategory = document.getElementById('postCategoryID');
+    const formPhoto = document.getElementById('postPhoto'); // placeholder only
+    const imgContainer = document.getElementById('displayPhoto');
+
+    // ===== Photo Placeholder Logic =====
+    formPhoto.addEventListener('change', (event) => {
+        if (imgContainer.classList.contains('d-none')) imgContainer.classList.remove('d-none');
+        imgContainer.innerHTML = '';
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imgElement.classList.add('w-100', 'rounded');
+                imgContainer.appendChild(imgElement);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function deleteImg() {
+        imgContainer.innerHTML = '';
+        imgContainer.classList.add('d-none');
+    }
+
+    // ===== Load Categories from Firestore =====
+    async function loadCategories() {
+        try {
+            const snapshot = await getDocs(collection(db, "itemCategory"));
+            snapshot.forEach(doc => {
+                const option = document.createElement('option');
+                option.value = doc.id; // Firestore document ID
+                option.textContent = doc.data().name;
+                formCategory.appendChild(option);
+            });
+        } catch (err) {
+            console.error("Error loading categories:", err);
+        }
+    }
+
+    // ===== Submit Item to Firestore =====
+    async function postItemProfile() {
+        const name = document.getElementById('postName').value.trim();
+        const categoryID = document.getElementById('postCategoryID').value;
+        const description = document.getElementById('postDescription').value.trim();
+
+        if (!name || !categoryID) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        try {
+            const docRef = await addDoc(collection(db, "itemProfile"), {
+                name,
+                categoryID,
+                description,
+                date: new Date().toISOString(),
+                approval: 0
             });
 
-            function deleteImg() {
-                imgContainer.innerHTML = '';
-                imgContainer.classList.add('d-none');
-            }
+            alert("Item added successfully!");
+            document.querySelector('form').reset();
+            deleteImg();
+        } catch (err) {
+            console.error("Error adding item:", err);
+            alert("Failed to submit. Check console.");
+        }
+    }
 
-            // Load categories dynamically from Firestore backend
-            async function loadCategories() {
-                try {
-                    const res = await fetch(API_CATEGORIES);
-                    const categories = await res.json();
-                    categories.forEach(cat => {
-                        const option = document.createElement('option');
-                        option.value = cat.id; // Firestore doc ID
-                        option.textContent = cat.name;
-                        formCategory.appendChild(option);
-                    });
-                } catch (err) {
-                    console.error("Error loading categories:", err);
-                }
-            }
-
-            // Submit new item (ignoring photo)
-            async function postItemProfile() {
-                const name = document.getElementById('postName').value.trim();
-                const categoryID = document.getElementById('postCategoryID').value;
-                const description = document.getElementById('postDescription').value.trim();
-
-                if (!name || !categoryID) {
-                    alert("Please fill in all required fields.");
-                    return;
-                }
-
-                try {
-                    const res = await fetch(`${API_PREFIX}/add`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, categoryID, description })
-                    });
-
-                    const data = await res.json();
-                    console.log(data);
-                    alert(data.message || "Submitted!");
-                    document.querySelector('form').reset();
-                    deleteImg(); // reset placeholder if any
-                } catch (err) {
-                    console.error("Error submitting item:", err);
-                    alert("Failed to submit. Check console for details.");
-                }
-            }
-
-            window.addEventListener('DOMContentLoaded', loadCategories);
+    // ===== Initialize =====
+    window.addEventListener('DOMContentLoaded', loadCategories);
     </script>
 </body>
 
