@@ -1,0 +1,70 @@
+/* Typography */
+* {
+    font-family: "Mona Sans", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Hubot Sans", sans-serif;
+}
+
+/* Layout Styles */
+body {
+    overflow-x: hidden;
+}
+
+main {
+    min-height: calc(100vh - 128px);
+}
+
+.row {
+    --bs-gutter-x: 0;
+    padding: 0.5em 1.5em;
+}
+
+#plan div {
+    padding: 0;
+}
+
+/* Hero & Background Images */
+#heroImg,
+header {
+    background-image: url(../imgs/magnifyingGlass.jpeg);
+}
+
+#heroImg,
+#abtImg,
+header {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+#heroText {
+    background-color: rgb(255, 255, 255, 0.75);
+    backdrop-filter: blur(3px);
+}
+
+/* UI Components & Shapes */
+.squared {
+    aspect-ratio: 1/1;
+}
+
+.img-icon,
+footer .btn {
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1) grayscale(100%);
+}
+
+.clickable {
+    cursor: pointer;
+}

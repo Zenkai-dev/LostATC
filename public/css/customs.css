@@ -1,0 +1,46 @@
+:root {
+    --bs-primary: #003a5c;
+    --bs-primary-rgb: 0, 58, 92;
+
+    --bs-secondary: #4a73c2;
+    --bs-secondary-rgb: 74, 115, 194;
+
+    --bs-info: #99d9eb;
+    --bs-info-rgb: 153, 217, 235;
+}
+
+.nav-link {
+    color: #4a73c2;
+}
+
+.navbar-brand,
+.nav-link:hover,
+.nav-link.active {
+    color: #003a5c !important;
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    font-style: italic;
+}
+
+.bg-light {
+    background-color: rgb(230, 230, 230) !important;
+}
+
+.card-header {
+    background: var(--bs-info);
+}
+
+.card {
+    border-color: var(--bs-secondary);
+}
+
+.card:has(.item) * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
