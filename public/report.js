@@ -2,8 +2,8 @@
 import { db } from './firebase-config.js';
 import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload';
-const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UNSIGNED_PRESET_NAME';
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/df2tdfrwq/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'ypoylpgu';
 
 // 1. Load Categories
 async function loadCategories() {
