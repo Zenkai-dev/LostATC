@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LostATC - Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hubot+Sans:ital,wght@0,200..900;1,200..900&family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<!-- WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSH-->
+<style>
+  nav {
+    background-color: rgb(230, 230, 230);
+  }
+
+  nav .btn,
+  #itemsList .btn {
+    background-color: white;
+    border-color: #4a73c2;
+    color: #4a73c2;
+  }
+
+  nav .btn:hover,
+  #itemsList .btn:hover {
+    background-color: #99d9eb;
+  }
+
+  #itemImg {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  #itemProfileZ {
+    overflow-y: auto
+  }
+
+  * {
+    font-family: "Mona Sans", sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Hubot Sans", sans-serif;
+  }
+</style>
+<!-- WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSH-->
+
+<body class="d-flex flex-column min-vh-100">
+
+  <main class="flex-grow-1">
+    <div class="container text-center py-2" style="max-height: 100vh;">
+      <div class="row py-2">
+        <div class="col">
+          <h1>Admin Dashboard</h1>
+        </div>
+      </div>
+      <div class="row rounded border"> <!-- List of Items-->
+        <nav class="col-4 bgcustom p-3 h-100" style="overflow-y: auto;">
+          <button class="btn" onclick="getDatabaseData().then(populateItemList);">
+            <span class="btn-txt">Refresh Database</span>
+          </button>
+          <button class="btn" onclick="viewClaims();">
+            <span class="btn-txt">View Claims & Inquires</span>
+          </button>
+          <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="scrollspy-example bgcustom" tabindex="0">
+            <div class="list-group" id="itemsList">
+              <!-- Items will be populated here -->
+            </div>
+          </div>
+        </nav>
+        <div class="col-8 bgcustom position-relative py-2" id="itemProfileZ"> <!-- Item Display Profile-->
+        </div>
+      </div>
+  </main>
+  <!-- WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSH-->
+
+  <script> //Script for Displaying Items
+    let itemIDList = [];
+    let nameList = [];
+    let dateList = [];
+    let descriptionList = [];
+    let photoList = [];
+    let categoryIDList = [];
+    let approvalList = [];
+
+    async function getDatabaseData() {
+      try {
+        itemIDList = [];
+        nameList = [];
+        dateList = [];
+        descriptionList = [];
+        photoList = [];
+        categoryIDList = [];
+        approvalList = [];
+
+        const response = await fetch("http://127.0.0.1:3000/items/lists?t=" + Date.now());
+        const data = await response.json();
+
+        itemIDList = data.ids;
+        nameList = data.names;
+        dateList = data.dates;
+        descriptionList = data.descriptions;
+        photoList = data.photos;
+        categoryIDList = data.categoryIDs;
+        approvalList = data.approvals;
+
+        console.log("Database data is now loaded and ready!");
+      } catch (error) {
+        console.error("Failed to load data on startup:", error);
+        alert("Error loading data from database. See console for details.");
+      }
+    }
+
+    //Populate Item List in Left Column
+    function populateItemList() {
+      console.log("Full Name List:", nameList);
+      console.log("Number of items to print:", nameList.length);
+      const itemsList = document.getElementById('itemsList');
+      itemsList.innerHTML = '';
+
+      for (let i = 0; i < nameList.length; i++) {
+        let category;
+        let approvalStatus;
+
+        if (categoryIDList[i] == 1) { category = "School Supplies"; }
+        else if (categoryIDList[i] == 2) { category = "Books"; }
+        else if (categoryIDList[i] == 3) { category = "Clothing"; }
+        else if (categoryIDList[i] == 4) { category = "Electronics"; }
+        else if (categoryIDList[i] == 5) { category = "Personal Items"; }
+        else { category = "Other"; }
+
+
+        if (approvalList[i] == 0) { approvalStatus = "Pending" }
+        else approvalStatus = "Approved";
+
+        itemsList.innerHTML += `<button id="item-${itemIDList[i]}" class="list-group-item list-group-item-action btn mt-2" type="button" onclick="itemProfileClicked('${itemIDList[i]}', '${nameList[i]}', '${dateList[i]}', '${descriptionList[i]}', '${photoList[i]}', '${category}', '${approvalStatus}')">
+          ${nameList[i]}
+          </button>`;
+      }
+    }
+
+    //Display Item Profile When Clicked
+    function itemProfileClicked(id, name, date, description, photo, category, approvalStatus) {
+      const itemProfileZ = document.getElementById('itemProfileZ');
+      itemProfileZ.innerHTML = `
+      <div class="container">
+        <div class="row py-md-4">
+          <div class="col-md-4">
+            <img id="itemImg" src="./pageimages/${photo}" alt="Item Image" class="w-100 rounded border">
+            <div class="d-flex justify-content-center flex-column">
+            <button onclick="approveItem('${name}')" class="btn btn-success">Approve Item</button>
+            <button onclick="disapproveItem('${name}')" class="btn btn-warning">Disapprove Item</button>
+            <button onclick="deleteItem('${name}')" class="btn btn-danger">Delete Item</button> 
+            </div>
+          </div>
+          <div class="col-md-8 text-center text-md-start order-first">
+            <h2>${name}</h2>
+            <p><strong>Item ID:</strong> ${id}</p>
+            <p><strong>Date Reported:</strong> ${convertDateFormat(date)}</p>
+            <p><strong>Category:</strong> ${category}</p>
+            <p><strong>Description:</strong> ${description}</p>
+            <p><strong>Approval Status:</strong> ${approvalStatus}</p>
+          </div>
+        </div>
+      </div>      
+
+      `;
+    }
+
+    async function deleteItem(itemName) {
+      if (!confirm(`Delete ${itemName}?`)) return;
+
+      const response = await fetch(`http://localhost:3000/items/delete/${encodeURIComponent(itemName)}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    }
+
+    async function approveItem(itemName) {
+      if (!confirm(`Approve ${itemName}?`)) return;
+      const response = await fetch(`http://localhost:3000/items/approve/${encodeURIComponent(itemName)}`, {
+        method: 'PUT'
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    }
+
+    async function disapproveItem(itemName) {
+      if (!confirm(`Disapprove ${itemName}?`)) return;
+      const response = await fetch(`http://localhost:3000/items/disapprove/${encodeURIComponent(itemName)}`, {
+        method: 'PUT'
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    }
+
+    /////////////////////////////////////////Claims & Inquires//////////////////////////////////////////////////////////////
+
+    let claimsIDList = [];
+    let claimfNameList = [];
+    let claimlNameList = [];
+    let emailList = [];
+    let postCIList = [];
+    let postIList = [];
+    let postItemIDList = [];
+
+    async function getClaimsData() {
+      try {
+        claimsIDList = [];
+        claimfNameList = [];
+        claimlNameList = [];
+        emailList = [];
+        postCIList = [];
+        postIList = [];
+        postItemIDList = [];
+
+        const response = await fetch("http://localhost:3000/items/claimlists");
+
+        const data = await response.json();
+
+        for (let i = 0; i < data.firstNames.length; i++) {
+          claimsIDList.push(data.claimIDs[i]);
+          claimfNameList.push(data.firstNames[i]);
+          claimlNameList.push(data.lastNames[i]);
+          emailList.push(data.emails[i]);
+          postCIList.push(data.postCIs[i]);
+          postIList.push(data.postIs[i]);
+          postItemIDList.push(data.postItemID[i]);
+        }
+
+        console.log("Fetched claims from database:", claimfNameList);
+      } catch (error) {
+        console.error("Error fetching claims:", error);
+      }
+    }
+
+    async function viewClaims() {
+      await getClaimsData();
+
+      const itemProfileZ = document.getElementById('itemProfileZ');
+      itemProfileZ.innerHTML = `
+          <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="scrollspy-example bgcustom" tabindex="0">
+            <div class="list-group" id="claimsList">
+              <!-- Items will be populated here -->
+            </div>
+          </div>
+          `;
+
+      for (let i = 0; i < claimfNameList.length; i++) {
+        const claimsList = document.getElementById('claimsList');
+        let cori;
+        if (postCIList[i] == 0) { cori = "Claim"; }
+        else { cori = "Inquiry"; }
+        claimsList.innerHTML += `<div class="list-group-item list-group-item-action btn mt-2">
+          <h5>Inquiry/Claim ID: ${claimsIDList[i]}</h5>
+          <p>First Name: ${claimfNameList[i]}</p>
+          <p>Last Name: ${claimlNameList[i]}</p>
+          <p>Email: ${emailList[i]}</p>
+          <p>Type: ${cori}</p>
+          <p>Inquiry: ${postIList[i]}</p>
+          <p>Posted Item ID: ${postItemIDList[i]}</p>
+          <button onclick="deleteClaim('${claimsIDList[i]}')" style="background-color: #C7140C; ; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-top: 10px; color: white;">Delete Inquiry/Claim</button>          
+          </div>`;
+      }
+    }
+
+
+    async function deleteClaim(claimID) {
+      if (!confirm(`Delete claim with ID ${claimID}?`)) return;
+
+      const response = await fetch(`http://localhost:3000/items/claimsdelete/${encodeURIComponent(claimID)}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    }
+
+  </script>
+  <!-- WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSH-->
+  <script> //Script for Welcome Message
+    // This runs as soon as the dashboard loads
+    window.onload = function () {
+
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const userName = urlParams.get('user');
+
+      getDatabaseData().then(populateItemList);
+      getClaimsData();
+    };
+  </script>
+  <script>
+    function convertDateFormat(dateTimeString) {
+      // Replace space with 'T' to help the Date constructor parse correctly as a local time
+      const dateObject = new Date(dateTimeString.replace(' ', 'T'));
+
+      // Extract date components
+      const month = dateObject.getMonth() + 1; // getMonth() returns 0-indexed month
+      const day = dateObject.getDate();
+      const year = dateObject.getFullYear().toString().slice(-2); // Get the last two digits of the year
+
+      // Format and return the string
+      return `${month}/${day}/${year}`;
+    }</script>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+
+</html>
