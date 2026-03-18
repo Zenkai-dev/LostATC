@@ -209,7 +209,7 @@
         const categoryID = document.getElementById('postCategoryID').value;
         const description = document.getElementById('postDescription').value.trim();
 
-        if (!name || !categoryID) {
+        if (!name /* || !categoryID */) {
             alert("Please fill in all required fields.");
             return;
         }
@@ -232,23 +232,6 @@
         }
     }c
 
-    const categories = [
-            "School Supplies",
-            "Books",
-            "Clothing",
-            "Electronics",
-            "Personal Items",
-            "Other"
-        ];
-
-        categories.forEach(async (name) => {
-            try {
-                await addDoc(collection(db, "itemCategory"), { name });
-                console.log(`Added category: ${name}`);
-            } catch (err) {
-                console.error(err);
-            }
-        });
 
     // ===== Initialize =====
     window.addEventListener('DOMContentLoaded', loadCategories);
