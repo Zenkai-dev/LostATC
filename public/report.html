@@ -209,7 +209,7 @@
         const categoryID = document.getElementById('postCategoryID').value;
         const description = document.getElementById('postDescription').value.trim();
 
-        if (!name /* || !categoryID */) {
+        if (!name || !categoryID) {
             alert("Please fill in all required fields.");
             return;
         }
@@ -232,6 +232,7 @@
         }
     }c
 
+    
 
     // ===== Initialize =====
     window.addEventListener('DOMContentLoaded', loadCategories);
