@@ -10,10 +10,24 @@ async function loadCategories() {
     const select = document.getElementById('postCategoryID');
     try {
         const querySnapshot = await getDocs(collection(db, "categories"));
+        
+        // Clear the "Loading..." state if you have one, 
+        // but keep the first "Select..." option if you want.
+        
+        if (querySnapshot.empty) {
+            console.warn("No categories found in Firestore!");
+            return;
+        }
+
         querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            console.log("Loading Category ID:", doc.id, "Content:", data);
+
             const opt = document.createElement('option');
             opt.value = doc.id; 
-            opt.innerHTML = doc.data().name;
+            
+            // Using a fallback string helps identify if the 'name' field is missing
+            opt.innerHTML = data.name || data.Name || "Unnamed Category";
             select.appendChild(opt);
         });
     } catch (e) {
