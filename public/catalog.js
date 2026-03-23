@@ -16,7 +16,7 @@ async function loadCatalog() {
         // 2. Fetch approved items, ordered by newest first
         const itemsQuery = query(
             collection(db, "items"), 
-            where("approval", "==", 1), // Only show approved items
+            where("approval", "==", 0), // Only show approved items
             orderBy("timestamp", "desc")
         );
         
