@@ -1,50 +1,62 @@
 import { db } from './firebase-config.js';
 import { collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Global state to store data for filtering without re-fetching from Firestore
+// Global variables to store data for instant filtering
 let allItems = []; 
 let categoryMap = {};
 
 /**
- * 1. INITIAL LOAD
- * Runs once when the page opens.
+ * 1. THE STARTUP FUNCTION
+ * Fetches categories and items from Firestore on page load.
  */
 async function loadCatalog() {
+    console.log("Initializing Catalog...");
     try {
-        // A. Load Categories into the dropdown and the lookup map
+        // A. Load Categories into the dropdown and our lookup map
         const catSelect = document.getElementById('categoryFilter');
         const catSnapshot = await getDocs(collection(db, "categories"));
         
         catSnapshot.forEach(doc => {
             const data = doc.data();
-            categoryMap[doc.id] = data.name; // ID "1" -> "Books"
+            categoryMap[doc.id] = data.name; 
             
+            // Populate the <select> dropdown
             const opt = document.createElement('option');
             opt.value = String(doc.id); 
             opt.innerHTML = data.name;
             catSelect.appendChild(opt);
         });
+        console.log("Categories loaded:", categoryMap);
 
-        // B. Load Items (Change '0' to '1' if you only want approved items)
-        const q = query(collection(db, "items"), where("approval", "==", 0), orderBy("timestamp", "desc"));
+        // B. Load Items (Showing unapproved items with approval: 0 for now)
+        // Note: This requires a Firestore Index (check your console for a link if it fails)
+        const q = query(
+            collection(db, "items"), 
+            where("approval", "==", 0), 
+            orderBy("timestamp", "desc")
+        );
+        
         const querySnapshot = await getDocs(q);
         
         allItems = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
         }));
+        
+        console.log("Items loaded:", allItems.length);
 
-        // C. Initial Display
+        // C. Initial render of the grid
         renderItems(allItems);
 
     } catch (e) {
-        console.error("Error loading catalog:", e);
+        console.error("Error in loadCatalog:", e);
+        document.getElementById('catalog').innerHTML = `<p class="text-danger">Failed to load items. Check console.</p>`;
     }
 }
 
 /**
- * 2. RENDER FUNCTION
- * Draws the HTML cards based on whatever array of items we give it.
+ * 2. THE RENDER FUNCTION
+ * Rebuilds the HTML grid whenever items are filtered.
  */
 function renderItems(itemsToDisplay) {
     const container = document.getElementById('catalog');
@@ -57,47 +69,53 @@ function renderItems(itemsToDisplay) {
 
     itemsToDisplay.forEach(item => {
         const catName = categoryMap[item.categoryID] || "Other";
-        const date = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : "N/A";
+        const displayDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : "Unknown Date";
         
-        // Match the structure of your previous card exactly
-        const cardHTML = `
-            <div class="p-2 col-6 col-md-4 col-lg-3">
-                <div class="card text-center h-100 shadow-sm item-card" 
+        // Exact HTML structure with Modal triggers
+        const itemCard = `
+            <div class="p-2 col-6 col-md-4 col-lg-3 ${item.categoryID}">
+                <div class="card text-center h-100 shadow-sm" 
                      data-bs-toggle="modal" 
                      data-bs-target="#formModal" 
+                     data-item-id="${item.id}"
                      onclick="setupModal('${item.id}')"
                      style="cursor: pointer;">
                     
-                    <img src="${item.photo}" class="card-img-top" style="height:180px; object-fit:cover;" alt="${item.name}">
-                    
-                    <div class="card-body">
-                        <h5 class="card-title">${item.name}</h5>
-                        <p class="mb-1 text-primary small fw-bold">${catName}</p>
-                        <p class="small text-muted">Reported: ${date}</p>
+                    <div style="height: 200px; overflow: hidden;">
+                        <img src="${item.photo}" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="${item.name}">
                     </div>
-                    
+
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">${item.name}</h5>
+                        <p class="text-muted small mb-1">${catName}</p>
+                        <p class="small text-muted">Reported: ${displayDate}</p>
+                    </div>
+
                     <div class="card-footer bg-white border-top-0">
                         <p class="m-0 p-0 text-muted small">ID: ${item.id.substring(0, 5)}...</p>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        `;
         
-        container.innerHTML += cardHTML;
+        container.innerHTML += itemCard;
     });
 }
 
 /**
- * 3. FILTER LOGIC
- * Triggered by the search input or dropdown change.
+ * 3. FILTER FUNCTION
+ * Handles the search input and the category dropdown.
  */
 window.filterItems = function() {
     const searchVal = document.getElementById('searchInput').value.toLowerCase();
     const catVal = document.getElementById('categoryFilter').value;
 
     const filtered = allItems.filter(item => {
+        // Search by name or description
         const matchesSearch = item.name.toLowerCase().includes(searchVal) || 
                               (item.description && item.description.toLowerCase().includes(searchVal));
         
+        // Match category (ensuring we compare strings to strings)
         const itemCatId = String(item.categoryID); 
         const matchesCat = (catVal === "all") || (itemCatId === catVal);
 
@@ -109,26 +127,23 @@ window.filterItems = function() {
 
 /**
  * 4. MODAL POPULATOR
- * Finds the item data and injects it into the modal before it opens.
+ * Injects the clicked item's data into the modal elements.
  */
 window.setupModal = function(itemId) {
+    console.log("Setting up modal for:", itemId);
     const item = allItems.find(i => i.id === itemId);
     if (!item) return;
 
-    // Assuming your modal has these IDs (Update if different)
+    // --- Update these IDs to match your Modal's HTML IDs ---
     const modalTitle = document.querySelector('#formModal .modal-title');
-    const modalBody = document.querySelector('#formModal .modal-body');
-
     if (modalTitle) modalTitle.innerText = item.name;
-    
-    // Example: Update specific fields inside your modal body
-    // You can customize this HTML based on your modal's actual structure
-    const detailImg = document.getElementById('modalItemImage'); // if you have this ID in modal
-    if (detailImg) detailImg.src = item.photo;
-    
-    const detailDesc = document.getElementById('modalItemDescription'); // if you have this ID in modal
-    if (detailDesc) detailDesc.innerText = item.description || "No description provided.";
+
+    const modalImg = document.getElementById('modalImage'); // Add this ID to your modal img tag
+    if (modalImg) modalImg.src = item.photo;
+
+    const modalDesc = document.getElementById('modalDescription'); // Add this ID to your modal p tag
+    if (modalDesc) modalDesc.innerText = item.description || "No further details provided.";
 };
 
-// Start the engine
+// Run the initialization
 loadCatalog();
