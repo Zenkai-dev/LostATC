@@ -78,22 +78,17 @@
         <div class="container-fluid">
             <!-- Filter & Search -->
             <nav class="pt-4 row justify-content-between">
-                <select class="form-select col-md-4" onchange="filterItems()">
+                <select id="categoryFilter" class="form-select col-md-4" onchange="filterItems()">
                     <option value="all">All Categories</option>
-                    <option value="1">School Supplies</option>
-                    <option value="2">Books</option>
-                    <option value="3">Clothing</option>
-                    <option value="4">Electronics</option>
-                    <option value="5">Personal Items</option>
-                    <option value="6">Other</option>
                 </select>
 
-                <input type="text" class="form-control col-md-4" placeholder="Search items..." oninput="filterItems()">
+                <input id="searchInput" type="text" class="form-control col-md-4" placeholder="Search items..."
+                    oninput="filterItems()">
             </nav>
 
             <!-- Catalog Body -->
             <div id="catalog" class="row flex-row row-wrap pt-2 pb-4 align-items-stretch">
-                <div class="p-2 col-6 col-md-4 col-lg-3 1">
+                <!-- <div class="p-2 col-6 col-md-4 col-lg-3 1">
                     <div class="card text-center" data-bs-toggle="modal" data-bs-target="#formModal" data-item-id="0">
                         <img src="./pageimages/${photoList[i]}" class="card-img-top">
                         <div class="card-body">
@@ -175,7 +170,7 @@
                             <p class="m-0 p-0">ID: 5</p>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
