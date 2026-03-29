@@ -92,44 +92,7 @@
     </p>
   </footer>
 <!-- WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSH-->
-  <script>
-    //For anybody tapping into this code, everything works here. Please don't change it :)
-    let usernameList = [];
-    let passwordList = [];
 
-    async function getDatabaseData() {
-      try {
-        const response = await fetch("http://127.0.0.1:3000/users/lists");
-        const data = await response.json();
-
-        usernameList = data.usernames;
-        passwordList = data.passwords;
-
-        console.log("Database data is now loaded and ready!");
-      } catch (error) {
-        console.error("Failed to load data on startup:", error);
-      }
-    }
-
-    getDatabaseData();
-
-    function test() {
-      let usernameInput = document.getElementById("username").value;
-      let passwordInput = document.getElementById("password").value;
-
-      console.log("Username List Size:", usernameList.length);
-
-      for (let i = 0; i < usernameList.length; i++) {
-        if (usernameInput == usernameList[i] && passwordInput == passwordList[i]) {
-          alert("Login Successful!");
-          window.location.href = "dashboard.html?user=" + encodeURIComponent(usernameInput);
-          return;
-        }
-      }
-      alert("Login Failed!");
-    }
-
-  </script>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
