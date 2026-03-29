@@ -1,21 +1,23 @@
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Anyone can read the catalog and submit a claim
-    match /items/{item} {
+    // 1. Allow anyone to see the public catalog
+    match /items/{itemId} {
       allow read: if true;
-      allow write: if false; // Only you do this manually or via admin
+      // Only admins can delete or edit items
+      allow write: if exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
-    
-    match /claims/{claim} {
-      allow write: if true; // Public can submit claims
-      // ONLY admins can read the claims!
+
+    // 2. ONLY admins can read the claims list
+    match /claims/{claimId} {
+      allow write: if true; // Public can submit
       allow read: if exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
     
-    // Only the owner can see the admin list
-    match /admins/{admin} {
+    // 3. Admin list protection
+    match /admins/{adminId} {
       allow read: if request.auth != null;
+      allow write: if false; // Only you manually via Console
     }
   }
 }
