@@ -29,7 +29,7 @@ async function loadCatalog() {
             catSelect.appendChild(opt);
         });
 
-        const q = query(collection(db, "items"), where("approval", "==", 0), orderBy("timestamp", "desc"));
+        const q = query(collection(db, "items"), where("approval", "==", 1), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         
         allItems = querySnapshot.docs.map(doc => ({
