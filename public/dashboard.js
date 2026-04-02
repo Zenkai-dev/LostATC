@@ -79,7 +79,7 @@ window.refreshData = async function() {
 /**
  * 3. VIEW CLAIMS (Replaces Profile View)
  */
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 
 window.viewClaims = async function() {
     const display = document.getElementById('itemProfileZ');
