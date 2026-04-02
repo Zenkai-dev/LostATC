@@ -104,6 +104,7 @@ window.viewClaims = async function() {
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h5>${claim.requestType} for Item: ${claim.itemId}</h5>
+                            <h5>${claim.requestType} for Item: ${claim.name}</h5>
                             <p class="mb-1"><strong>Name:</strong> ${claim.firstName} ${claim.lastName}</p>
                             <p class="mb-1"><strong>Email:</strong> ${claim.email}</p>
                             <p class="mb-2 text-secondary italic">"${claim.message || 'No message provided.'}"</p>
