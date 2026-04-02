@@ -79,9 +79,11 @@ window.refreshData = async function() {
 /**
  * 3. VIEW CLAIMS (Replaces Profile View)
  */
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 window.viewClaims = async function() {
     const display = document.getElementById('itemProfileZ');
-    display.innerHTML = "<h3 class='p-4'>Loading Claims...</h3>";
+    display.innerHTML = "<h3 class='p-4 text-center'>Loading Claims...</h3>";
 
     try {
         const querySnapshot = await getDocs(collection(db, "claims"));
@@ -97,28 +99,44 @@ window.viewClaims = async function() {
             return;
         }
 
-        querySnapshot.forEach((docSnap) => {
+        // We use for...of instead of forEach to allow 'await' inside the loop
+        for (const docSnap of querySnapshot.docs) {
             const claim = docSnap.data();
+            
+            // 1. Fetch the actual item data to get the photo
+            const itemRef = doc(db, "items", claim.itemId);
+            const itemSnap = await getDoc(itemRef);
+            
+            // 2. Fallback if item was deleted but claim remains
+            const itemPhoto = itemSnap.exists() ? itemSnap.data().photo : "placeholder.jpg";
+            const itemName = itemSnap.exists() ? itemSnap.data().name : "Unknown Item";
+
             content.innerHTML += `
                 <div class="list-group-item border-start border-4 border-primary mb-3 shadow-sm text-start">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h5>${claim.requestType} for Item: ${claim.itemId}</h5>
-                            <h5>${claim.requestType} for Item: ${claim.name}</h5>
-                            <p class="mb-1"><strong>Name:</strong> ${claim.firstName} ${claim.lastName}</p>
-                            <p class="mb-1"><strong>Email:</strong> ${claim.email}</p>
-                            <p class="mb-2 text-secondary italic">"${claim.message || 'No message provided.'}"</p>
+                    <div class="row align-items-center">
+                        <div class="col-3 col-md-2">
+                            <img src="${itemPhoto}" class="img-fluid rounded border shadow-sm" alt="Item Image">
                         </div>
-                        <button class="btn btn-outline-danger btn-sm" onclick="deleteClaim('${docSnap.id}')">Delete</button>
+                        
+                        <div class="col-9 col-md-10">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5>${claim.requestType}: ${itemName}</h5>
+                                    <p class="mb-1 text-muted small">ID: ${claim.itemId}</p>
+                                    <p class="mb-1"><strong>From:</strong> ${claim.firstName} ${claim.lastName} (${claim.email})</p>
+                                    <p class="mb-2 text-secondary italic">"${claim.message || 'No message provided.'}"</p>
+                                </div>
+                                <button class="btn btn-outline-danger btn-sm" onclick="deleteClaim('${docSnap.id}')">Delete</button>
+                            </div>
+                        </div>
                     </div>
                 </div>`;
-        });
+        }
     } catch (e) {
         console.error("Load Claims Error:", e);
         display.innerHTML = "Error loading claims.";
     }
 };
-
 /**
  * 4. ITEM PROFILE DISPLAY
  */
