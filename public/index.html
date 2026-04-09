@@ -73,7 +73,8 @@
 
         <section id="plan" class="row text-center align-items-stretch mx-auto px-0 py-3">
             <div class="col-md-4 col-sm-12 px-2 my-2 my-md-0">
-                <div class="row px-2 py-5 p-sm-4 mx-0 h-100 rounded bg-info shadow-sm text-white">
+                <div class="row px-2 py-5 p-sm-4 mx-0 h-100 rounded bg-info shadow-sm text-white" onmouseover=""
+                    id="card1">
                     <div class="align-self-start"><img class="w-50 squared" src="imgs/search-svgrepo-com.svg" alt="">
                     </div>
                     <div class="">
@@ -82,7 +83,8 @@
                 </div>
             </div>
             <div class="col-md-4 col-sm-12 px-2 my-2 my-md-0">
-                <div class="row px-2 py-5 p-sm-4 mx-0 h-100 rounded bg-secondary shadow-sm text-white">
+                <div class="row px-2 py-5 p-sm-4 mx-0 h-100 rounded bg-secondary shadow-sm text-white" onmouseover=""
+                    id="card2">
                     <div class=""><img class="w-50 squared" src="imgs/write-svgrepo-com.svg" alt="">
                     </div>
                     <div class="col-md-12 row align-items-center">
@@ -92,7 +94,8 @@
                 </div>
             </div>
             <div class="col-md-4 col-sm-12 px-2 my-2 my-md-0">
-                <div class="row px-2 py-5 p-sm-4 mx-0 h-100 rounded bg-primary shadow-sm text-white">
+                <div class="row px-2 py-5 p-sm-4 mx-0 h-100 rounded bg-primary shadow-sm text-white" onmouseover=""
+                    id="card3">
                     <div class=""><img class="w-50 squared" src="imgs/bag-check-svgrepo-com.svg" alt="">
                     </div>
                     <div class="col-md-12 row align-items-center">
@@ -258,6 +261,38 @@
 
         // Now you can use 'db' freely
         console.log("Firestore is ready:", db);
+    </script>
+
+    <script>
+        //Hover Anim
+        const card = document.getElementById("card1");
+        const card2 = document.getElementById("card2");
+        const card3 = document.getElementById("card3");
+
+        card.addEventListener("mouseover", () => {
+            // Arguments: (Property, Value, Priority)
+            card.style.setProperty("background-color", "rgb(255, 0, 0)", "important");
+        });
+        card2.addEventListener("mouseover", () => {
+            console.log("isworking");
+            card2.style.setProperty("background-color", "rgb(255, 0, 0)", "important");
+        });
+        card3.addEventListener("mouseover", () => {
+            console.log("isworking");
+            card3.style.setProperty("background-color", "rgb(255, 0, 0)", "important");
+        });
+
+        card.addEventListener("mouseout", () => {
+            card.style.setProperty("background-color", "rgba(var(--bs-info-rgb),var(--bs-bg-opacity))", "important");
+        });
+        card2.addEventListener("mouseout", () => {
+            console.log("isworking");
+            card2.style.setProperty("background-color", "rgba(var(--bs-secondary-rgb),var(--bs-bg-opacity))", "important");
+        });
+        card3.addEventListener("mouseout", () => {
+            console.log("isworking");
+            card3.style.setProperty("background-color", "rgba(var(--bs-primary-rgb),var(--bs-bg-opacity))", "important");
+        });
     </script>
 </body>
 
