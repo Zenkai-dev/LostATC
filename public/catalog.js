@@ -159,4 +159,11 @@ document.addEventListener('change', (e) => {
     }
 });
 
+/**
+ * UI HELPER: Hide Inquiry field when form resets
+ */
+document.querySelector('#formModal form').addEventListener('reset', () => {
+    document.getElementById('inquiry').classList.add('d-none');
+});
+
 loadCatalog();
