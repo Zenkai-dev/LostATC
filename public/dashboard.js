@@ -1,7 +1,18 @@
-import { db } from './firebase-config.js';
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
-    collection, getDocs, doc, getDoc, updateDoc, deleteDoc, query, orderBy 
+import { db } from "./firebase-config.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const auth = getAuth();
@@ -11,115 +22,132 @@ let allItems = []; // Global storage for local filtering
  * 1. THE SECURITY GUARD (Runs on Page Load)
  */
 onAuthStateChanged(auth, async (user) => {
-    const adminContent = document.getElementById('adminContent');
-    
-    if (user) {
-        try {
-            const adminRef = doc(db, "admins", user.uid);
-            const adminSnap = await getDoc(adminRef);
+  const adminContent = document.getElementById("adminContent");
 
-            if (adminSnap.exists()) {
-                console.log("Welcome Admin:", user.email);
-                if(adminContent) adminContent.style.display = "block";
-                await refreshData();
-            } else {
-                alert("Access Denied: You are not on the authorized admin list.");
-                await signOut(auth);
-                window.location.href = "user.html";
-            }
-        } catch (error) {
-            console.error("Security check failed:", error);
-            window.location.href = "user.html";
-        }
-    } else {
+  if (user) {
+    try {
+      const adminRef = doc(db, "admins", user.uid);
+      const adminSnap = await getDoc(adminRef);
+
+      if (adminSnap.exists()) {
+        console.log("Welcome Admin:", user.email);
+        if (adminContent) adminContent.style.display = "block";
+        await refreshData();
+      } else {
+        alert("Access Denied: You are not on the authorized admin list.");
+        await signOut(auth);
         window.location.href = "user.html";
+      }
+    } catch (error) {
+      console.error("Security check failed:", error);
+      window.location.href = "user.html";
     }
+  } else {
+    window.location.href = "user.html";
+  }
 });
 
 /**
  * 2. DATA RENDERING & SEARCH
  */
 function renderList(itemsToDisplay) {
-    const itemsList = document.getElementById('itemsList');
-    itemsList.innerHTML = ''; 
+  const itemsList = document.getElementById("itemsList");
+  itemsList.innerHTML = "";
 
-    if (itemsToDisplay.length === 0) {
-        itemsList.innerHTML = '<p class="p-3 text-muted">No matching items found.</p>';
-        return;
-    }
+  if (itemsToDisplay.length === 0) {
+    itemsList.innerHTML =
+      '<p class="p-3 text-muted">No matching items found.</p>';
+    return;
+  }
 
-    itemsToDisplay.forEach(item => {
-        const isApproved = item.approval === 1;
-        const statusText = isApproved ? "Approved" : "Pending";
-        const statusClass = isApproved ? "text-success" : "text-warning";
+  itemsToDisplay.forEach((item) => {
+    const isApproved = item.approval === 1;
+    const statusText = isApproved ? "Approved" : "Pending";
+    const statusClass = isApproved ? "text-success" : "text-warning";
 
-        itemsList.innerHTML += `
+    itemsList.innerHTML += `
             <button class="list-group-item list-group-item-action btn mt-2 shadow-sm" 
                     onclick="itemProfileClicked('${item.id}')">
                 <div class="fw-bold">${item.name}</div>
                 <small class="${statusClass}">${statusText}</small>
             </button>`;
-    });
+  });
 }
 
-window.filterItems = function() {
-    const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase();
-    const filtered = allItems.filter(item => 
-        item.name.toLowerCase().includes(searchTerm) || 
-        item.description.toLowerCase().includes(searchTerm) ||
-        item.id.toLowerCase().includes(searchTerm)
-    );
-    renderList(filtered);
+window.filterItems = function () {
+  const searchTerm = document
+    .getElementById("adminSearchInput")
+    .value.toLowerCase();
+  const filtered = allItems.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm) ||
+      item.description.toLowerCase().includes(searchTerm) ||
+      item.id.toLowerCase().includes(searchTerm),
+  );
+  renderList(filtered);
 };
 
-window.refreshData = async function() {
-    const itemsList = document.getElementById('itemsList');
-    itemsList.innerHTML = `<div class="p-3 text-muted">Updating...</div>`;
+window.refreshData = async function () {
+  const itemsList = document.getElementById("itemsList");
+  itemsList.innerHTML = `<div class="p-3 text-muted">Updating...</div>`;
 
-    try {
-        const q = query(collection(db, "items"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        allItems = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  try {
+    const q = query(collection(db, "items"), orderBy("timestamp", "desc"));
+    const querySnapshot = await getDocs(q);
 
-        renderList(allItems);
-        document.getElementById('adminSearchInput').value = ''; // Reset search bar
-    } catch (e) {
-        console.error("Load Items Error:", e);
-        itemsList.innerHTML = "Error loading items.";
-    }
+    allItems = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    renderList(allItems);
+    document.getElementById("adminSearchInput").value = ""; // Reset search bar
+  } catch (e) {
+    console.error("Load Items Error:", e);
+    itemsList.innerHTML = "Error loading items.";
+  }
 };
 
 /**
  * 3. VIEW CLAIMS (Includes Image Lookup)
  */
-window.viewClaims = async function() {
-    const display = document.getElementById('itemProfileZ');
-    display.innerHTML = "<h3 class='p-4 text-center'>Loading Claims...</h3>";
+window.viewClaims = async function () {
+  const display = document.getElementById("itemProfileZ");
+  display.innerHTML = "<h3 class='p-4 text-center'>Loading Claims...</h3>";
 
-    try {
-        const querySnapshot = await getDocs(collection(db, "claims"));
-        display.innerHTML = `
+  try {
+    const querySnapshot = await getDocs(collection(db, "claims"));
+    display.innerHTML = `
             <div class="p-4">
                 <h3 class="mb-4">Claims & Inquiries</h3>
                 <div class="list-group" id="claimsContent"></div>
             </div>`;
-        const content = document.getElementById('claimsContent');
+    const content = document.getElementById("claimsContent");
 
-        if (querySnapshot.empty) {
-            content.innerHTML = "<p class='text-muted'>No claims currently pending.</p>";
-            return;
+    if (querySnapshot.empty) {
+      content.innerHTML =
+        "<p class='text-muted'>No claims currently pending.</p>";
+      return;
+    }
+
+    for (const docSnap of querySnapshot.docs) {
+      const claim = docSnap.data();
+
+      // --- FIX START: Safely check if itemId exists and isn't empty ---
+      let itemPhoto = "placeholder.jpg";
+      let itemName = "Unknown/No Item Linked";
+
+      if (claim.itemId && claim.itemId.trim() !== "") {
+        const itemRef = doc(db, "items", claim.itemId);
+        const itemSnap = await getDoc(itemRef);
+
+        if (itemSnap.exists()) {
+          itemPhoto = itemSnap.data().photo || "placeholder.jpg";
+          itemName = itemSnap.data().name || "Unnamed Item";
+        } else {
+          itemName = "Deleted Item";
         }
+      }
+      // --- FIX END ---
 
-        for (const docSnap of querySnapshot.docs) {
-            const claim = docSnap.data();
-            const itemRef = doc(db, "items", claim.itemId);
-            const itemSnap = await getDoc(itemRef);
-            
-            const itemPhoto = itemSnap.exists() ? itemSnap.data().photo : "placeholder.jpg";
-            const itemName = itemSnap.exists() ? itemSnap.data().name : "Deleted Item";
-
-            content.innerHTML += `
+      content.innerHTML += `
                 <div class="list-group-item border-start border-4 border-primary mb-3 shadow-sm text-start">
                     <div class="row align-items-center">
                         <div class="col-3 col-md-2">
@@ -129,32 +157,35 @@ window.viewClaims = async function() {
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h5>${claim.requestType}: ${itemName}</h5>
-                                    <p class="mb-1 text-muted small">ID: ${claim.itemId}</p>
+                                    <p class="mb-1 text-muted small">ID: ${claim.itemId || "None"}</p>
                                     <p class="mb-1"><strong>From:</strong> ${claim.firstName} ${claim.lastName} (${claim.email})</p>
-                                    <p class="mb-2 text-secondary italic">"${claim.message || 'No message.'}"</p>
+                                    <p class="mb-2 text-secondary italic">"${claim.message || "No message."}"</p>
                                 </div>
                                 <button class="btn btn-outline-danger btn-sm" onclick="deleteClaim('${docSnap.id}')">Delete</button>
                             </div>
                         </div>
                     </div>
                 </div>`;
-        }
-    } catch (e) {
-        display.innerHTML = "Error loading claims.";
     }
+  } catch (e) {
+    console.error("View Claims Error:", e); // Good practice to log the actual error details to console
+    display.innerHTML = "Error loading claims.";
+  }
 };
 
 /**
  * 4. ITEM PROFILE DISPLAY
  */
-window.itemProfileClicked = function(id) {
-    const item = allItems.find(i => i.id === id);
-    const display = document.getElementById('itemProfileZ');
-    if (!item) return;
+window.itemProfileClicked = function (id) {
+  const item = allItems.find((i) => i.id === id);
+  const display = document.getElementById("itemProfileZ");
+  if (!item) return;
 
-    const displayDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : "Unknown";
+  const displayDate = item.timestamp
+    ? new Date(item.timestamp).toLocaleDateString()
+    : "Unknown";
 
-    display.innerHTML = `
+  display.innerHTML = `
         <div class="p-4 text-start">
             <div class="row">
                 <div class="col-md-5">
@@ -181,25 +212,25 @@ window.itemProfileClicked = function(id) {
  * 5. ACTIONS
  */
 window.updateStatus = async (id, val) => {
-    await updateDoc(doc(db, "items", id), { approval: val });
-    await refreshData();
-    itemProfileClicked(id);
+  await updateDoc(doc(db, "items", id), { approval: val });
+  await refreshData();
+  itemProfileClicked(id);
 };
 
 window.deleteItem = async (id) => {
-    if (!confirm("Delete item?")) return;
-    await deleteDoc(doc(db, "items", id));
-    await refreshData();
-    document.getElementById('itemProfileZ').innerHTML = '';
+  if (!confirm("Delete item?")) return;
+  await deleteDoc(doc(db, "items", id));
+  await refreshData();
+  document.getElementById("itemProfileZ").innerHTML = "";
 };
 
 window.deleteClaim = async (id) => {
-    if (!confirm("Delete claim?")) return;
-    await deleteDoc(doc(db, "claims", id));
-    viewClaims();
+  if (!confirm("Delete claim?")) return;
+  await deleteDoc(doc(db, "claims", id));
+  viewClaims();
 };
 
 window.logout = async () => {
-    await signOut(auth);
-    window.location.href = "user.html";
+  await signOut(auth);
+  window.location.href = "user.html";
 };
